@@ -63,6 +63,24 @@ int main() {
         }
     }
     find_middle_vertices();
+    if(k == 2) {
+        int res = 1e9;
+        int res_index = 0;
+        for(int i = 2; i <= n; i ++) {
+            if(a[1][i] + a[i][1] < res) {
+                res = a[1][i] + a[i][1];
+                res_index = i;
+            }
+        }
+        cout << res << endl;
+        cout << "1 ";
+        cout << res_index;
+        return 0;
+    }
+    if(k == 0) {
+        cout << "0";
+        return 0;
+    }
     check[1] = 1;
     backtrack(0, 1, 0);
     cout << mn << endl;
