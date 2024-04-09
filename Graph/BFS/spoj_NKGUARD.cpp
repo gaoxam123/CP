@@ -4,10 +4,11 @@ using namespace std;
 
 int n, m, a[705][705], ans;
 bool visited[705][705];
-int moveX[] = {0, 0, 1, -1};
-int moveY[] = {1, -1, 0, 0};
+int moveX[] = {-1, -1, -1, 0, 0, 1, 1, 1};
+int moveY[] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
 void bfs(int sx, int sy) {
+    int check = 1;
     queue <pair <int, int> > q;
     q.push(make_pair(sx, sy));
     visited[sx][sy] = true;
@@ -15,22 +16,21 @@ void bfs(int sx, int sy) {
         int x = q.front().first;
         int y = q.front().second;
         q.pop();
-        int cnt = 0;
-        for(int i = 0; i < 4; i ++) {
+        for(int i = 0; i < 8; i ++) {
             int u = x + moveX[i];
             int v = y + moveY[i];
 
             if(u > n || u < 1) continue;
             if(v > m || v < 1) continue;
 
-            if(a[u][v] > a[x][y]) cnt ++;
-            if(!visited[u][v]) {
+            if(!visited[u][v] && a[u][v] == a[x][y]) {
                 visited[u][v] = true;
                 q.push(make_pair(u, v));
             }
+            if(a[x][y] < a[u][v]) check = 0;
         }
-        if(cnt == 0) ans ++;
     }
+    ans += check;
 }
 
 int main() {
@@ -40,6 +40,10 @@ int main() {
             cin >> a[i][j];
         }
     }
-    bfs(1, 1);
+    for(int i = 1; i <= n; i ++) {
+        for(int j = 1; j <= m; j ++) {
+            if(!visited[i][j]) bfs(i, j);
+        }
+    }
     cout << ans;
 }

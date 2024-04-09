@@ -40,6 +40,6 @@ int main() {
 		cin >> temp1 >> temp2;
 		cnt = 1;
 		backtrack(1);
-		cout<<endl;
+		cout << endl;
 	}
 }

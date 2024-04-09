@@ -5,6 +5,8 @@ using namespace std;
 
 int n, a[10005], b[10005], dp[2][10005];
 
+// main idea: dp[i][j] is the min cost considering first i pilots and there are still j assistants not having a main pilot
+
 signed main() {
     cin >> n;
     for(int i = 1; i <= n; i ++) {

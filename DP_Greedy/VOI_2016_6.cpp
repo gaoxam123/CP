@@ -46,6 +46,7 @@ int main() {
             dp[i] = dp[st.top() - 1] + 1;
             trace[i] = st.top();
         }
+        // after pushing i in the stack, i becomes the top, if dp[top - 1] is not the best, then we don't push i in
         if(st.empty() || (dp[st.top() - 1] > dp[i - 1])) st.push(i);
     }   
     cout << dp[n] << endl;
