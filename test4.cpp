@@ -1,67 +1,60 @@
+// https://oj.vnoi.info/problem/bedao_r08_funfair
 #include <bits/stdc++.h>
 using namespace std;
-
 #define int long long
 
-int n, m, a[15], cnt, t;
-stack <int> ops, value;
-int sign[15];
-
-int priority(int op) {
-    return (op == 1 || op == 2) ? 1 : 2;
-}
-
-void process(stack <int>& val, int op) {
-    int r = val.top();
-    val.pop();
-    int l = val.top();
-    val.pop();
-    if(op == 3) val.push(l * r);
-    if(op == 2) val.push(l - r);
-    if(op == 1) val.push(l + r);
-}
-
-void backtrack(int pos) {
-    if(pos == n) {
-        // compute the value of the expression
-        value.push(a[1]);
-        for(int i = 2; i <= n; i ++) {
-            while(!ops.empty() && priority(ops.top()) >= priority(sign[i])) {
-                process(value, ops.top());
-                ops.pop();
-            }
-            ops.push(sign[i]);
-            value.push(a[i]);
-        }
-        while(!ops.empty()) {
-            process(value, ops.top());
-            ops.pop();
-        }
-        if(value.top() % m == 0) {
-            cnt ++;
-        }
-        while(!value.empty()) value.pop();
-        return;
-    }
-    sign[pos + 1] = 1; // +
-    backtrack(pos + 1);
-    sign[pos + 1] = 2; // -
-    backtrack(pos + 1);
-    sign[pos + 1] = 3; // *
-    backtrack(pos + 1);
-}
+int n, x, y, a[1000005], ans = -1e18, L1[1000005], R1[1000005], sum[1000005], l, r, L2[1000005], R2[1000005];
+stack <int> st;
 
 signed main() {
-    cin >> t;
-    while(t --) {
-        cin >> n >> m;
-        for(int i = 1; i <= n; i ++) {
-            cin >> a[i];
-        }
-        cnt = 0;
-        memset(sign, 0, sizeof(sign));
-        backtrack(1);
-        cout << cnt << endl;
+    cin >> n >> x >> y;
+    for(int i = 1; i <= n; i ++) {
+        cin >> a[i];
+        sum[i] = sum[i - 1] + a[i];
+        while(!st.empty() && a[st.top()] >= a[i]) st.pop();
+        if(!st.empty()) L1[i] = st.top() + 1;
+        else L1[i] = 1;
+        st.push(i);
     }
+    while(!st.empty()) st.pop();
+    for(int i = n; i >= 1; i --) {
+        while(!st.empty() && a[st.top()] >= a[i]) st.pop();
+        if(!st.empty()) R1[i] = st.top() - 1;
+        else R1[i] = n;
+        st.push(i);
+    }
+    while(!st.empty()) st.pop();
+    for(int i = 1; i <= n; i ++) {
+        while(!st.empty() && a[st.top()] > a[i]) st.pop();
+        if(!st.empty()) L2[i] = st.top() + 1;
+        else L2[i] = n;
+        st.push(i);
+    }
+    while(!st.empty()) st.pop();
+    for(int i = n; i >= 1; i --) {
+        while(!st.empty() && a[st.top()] > a[i]) st.pop();
+        if(!st.empty()) R2[i] = st.top() - 1;
+        else R2[i] = n;
+        st.push(i);
+    }
+    for(int i = 1; i <= n; i ++) {
+        if(a[i] >= x && a[i] <= y) {
+            if(ans < sum[R1[i]] - sum[L1[i] - 1]) {
+                ans = sum[R1[i]] - sum[L1[i] - 1];
+                l = L1[i];
+                r = R1[i];
+            }
+            if(ans < sum[R2[i]] - sum[L2[i] - 1]) {
+                ans = sum[R2[i]] - sum[L2[i] - 1];
+                l = L2[i];
+                r = R2[i];
+            }
+            if(ans < a[i]) {
+                ans = a[i];
+                l = i;
+                r = i;
+            }
+        }
+    }
+    cout << ans << endl << l << " " << r;
 }
-
