@@ -92,5 +92,8 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp"
+    },
+    "ocaml.sandbox": {
+        "kind": "global"
     }
 }
