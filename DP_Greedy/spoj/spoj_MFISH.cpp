@@ -16,6 +16,7 @@ int main() {
     for(int i = 1; i <= m; i ++) {
         cin >> b[i] >> d[i];
     }
+    // have to sort first
     b[m + 1] = n + 1;
     // determine which cell could be a potential anchor position
     for(int i = 1; i <= m; i ++) {
