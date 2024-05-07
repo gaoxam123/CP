@@ -1,51 +1,51 @@
 // https://codeforces.com/problemset/problem/313/D
 #include <bits/stdc++.h>
 using namespace std;
+#define int long long
 
-int n, m, K, dp[305][305], ans = 1e9;
+vector <int> id[305];
+int n, m, K, dp[305][305], ans = 1e18;
+pair <pair <int, int>, int> a[100005];
 
-struct gg {
-    int l, r, c;
-    gg(int e, int f, int g) {
-        l = e, r = f, c = g;
-    }
-    bool operator < (const gg &other) const {
-        return r < other.r;
-    }
-};
+bool cmp(pair <pair <int, int>, int> x, pair <pair <int, int>, int> y) {
+    if(x.first.second < y.first.second) return true;
+    else if(x.first.second == y.first.second) return x.first.first < y.first.first;
+}
 
-vector <gg> a;
-
-int main() {
+signed main() {
     cin >> n >> m >> K;
     for(int i = 1; i <= m; i ++) {
-        int l, r, c;
-        cin >> l >> r >> c;
-        a.push_back({l, r, c});
+        cin >> a[i].first.first >> a[i].first.second >> a[i].second;
     }
-    sort(a.begin(), a.end());
-    // for(int i = 0; i < m; i ++) {
-    // 	cout << a[i].l << " " << a[i].r << " " << a[i].c << endl;
-    // }
-    memset(dp, 0x3f, sizeof(dp));
-    for(int i = 1; i <= n; i ++) {
-        dp[0][i] = 0;
+    sort(a + 1, a + m + 1, cmp);
+    for(int i = 0; i <= n; i ++) {
+        for(int k = 0; k <= n; k ++) {
+            dp[i][k] = 1e18;
+        }
     }
-    for(int k = 1; k <= n; k ++) {
-        for(int i = 1; i <= n; i ++) {
-            for(int j = 0; j < m; j ++) {
-                if(i - a[j].l >= 0 && i - a[j].l <= k - 1 && i <= a[j].r) {
-                    dp[k][i] = min(dp[k][i], dp[k - 1][a[j].l - 1] + a[j].c);
-                    // if(k == 1) cout << j << endl;
+    for(int i = 0; i <= n; i ++) {
+        dp[i][0] = 0;
+        if(i >= 1) {
+            for(int j = 1; j <= m; j ++) {
+                if(a[j].first.first <= i && a[j].first.second >= i) {
+                    id[i].push_back(j);
                 }
             }
-            dp[k][i] = min(dp[k][i], dp[k - 1][i]);
+        }
+    }
+    for(int i = 1; i <= n; i ++) {
+        for(int k = 1; k <= min(i, K); k ++) {
+            dp[i][k] = dp[i - 1][k];
+            for(int j: id[i]) {
+                dp[i][k] = min(dp[i][k], dp[i - (i - a[j].first.first + 1)][max((int)0, k - (i - a[j].first.first + 1))] + a[j].second);
+            }
         }
     }
     for(int k = K; k <= n; k ++) {
-        ans = min(ans, dp[k][n]);
+        ans = min(ans, dp[n][k]);
     }
-    cout << ans;
+    if(ans < 1e18) cout << ans;
+    else cout << "-1";
 }
 
-// 269B, 273D, 283C, 464C, 429B, 383D, 366C, 346B, 331C2
+// 269B, 283C, 429B
